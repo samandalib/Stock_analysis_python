@@ -4,27 +4,38 @@ Created on Thu Nov  5 11:31:14 2020
 
 @author: hesam
 """
+import os
 
-"""
-UNIX timestamp convertor functions:
-    date_convertor function takes the human readable date in MM/DD/YYYY format and returns Unix
-    Timestamp in integer format
-    timestamp_converot function takes the UNIX timestamp format and returns human readable date in
-    MM/DD/YYYY format
-"""
+#os.chdir("..\\")
+
+start_date = "01/01/2020"
+till_date = "01/02/2020"
+def get_dates():
+    return start_date, till_date
+
+
 
 def date_convertor(date):
+    '''
+        date_convertor function takes the human readable date in DD/MM/YYYY format and returns Unix
+    Timestamp in integer format
+    '''
     #convert the time to UNIX timestamp
     import time
     result = int(time.mktime(time.strptime(date, "%d/%m/%Y")))
     return result #Returns Integer type
     
 
-
 def timestamp_convertor(timestamp):
-        import datetime
-        result = datetime.datetime.fromtimestamp(int(timestamp)).strftime('%Y-%m-%d')
-        return result #Returns String type
+    """
+    UNIX timestamp convertor
+
+    timestamp_converot function takes the UNIX timestamp format and returns human readable date in
+    YYYY/MM/DD format
+    """
+    import datetime
+    result = datetime.datetime.fromtimestamp(int(timestamp)).strftime('%Y-%m-%d')
+    return result #Returns String type
 
 
 '''Company Symbols'''
@@ -51,17 +62,22 @@ def get_companies_info():
     dictionary_guide[company_list[0][1]]=company_list[0][2:]
     
     
-    print("Dictionary Guide: ",dictionary_guide)
+    #print("Dictionary Guide: ",dictionary_guide)
     
     for company in company_list[0:101]:
         company_dictionary[company[1]]=company[2:]
         
     return company_dictionary
 
-'''
-Function for updating all the files in the database
-'''
+
 def update_dataset():
+    '''
+    Function for updating all the files in the database
+    '''
+    
+    start_date, end_date = get_dates()
+    # print(start_date, end_date)
+    # input()
     import os
     import finnhub
     import pandas as pd
@@ -70,8 +86,8 @@ def update_dataset():
        
     companies = get_companies_info()
     
-    start_date = "01/01/2019"
-    end_date = "01/02/2019"
+    #start_date = "01/01/2019"
+    #end_date = "01/01/2020"
     start_date, end_date = date_convertor(start_date), date_convertor(end_date)
     print(start_date, end_date)
     
@@ -93,12 +109,13 @@ def update_dataset():
             #Write the CSV file out of data frame
             response_csv = response.to_csv(f"{company}.csv")
         except:
-            print('no company found ...')
+            print(company, 'no data found ...')
  
-'''
-Function for returning information about specific company
-'''
+
 def get_company_data(company):
+    '''
+    Function for returning information about specific company
+    '''
     import os
     
     #os.chdir("data_sets")
@@ -108,11 +125,12 @@ def get_company_data(company):
     #pd.DataFrame(company_data)
     return company_data[1:]
 
-'''
-Function for getting a dictionary for all the changes in prices in the gathered files
-and calculating price changes 
-'''    
+   
 def refine_companies_records():
+    '''
+    Function for getting a dictionary for all the changes in prices in the gathered files
+    and calculating price changes 
+    ''' 
     import os
     from classes import DeltaObject
     
